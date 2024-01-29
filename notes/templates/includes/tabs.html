@@ -1,0 +1,66 @@
+<!-- Loop for Tabs -->
+{% for item in tabs_with_user_subtabs %}
+<div id='tabs_with_user_subtabs'>
+    <!-- Tab Header -->
+    <div style="display: flex; align-items: left;justify-content:flex-start">
+        <!-- Tab Name -->
+        <div class='mdl-button mdl-js-button mdl-button--primary'>{{item.tab.name}}</div>
+
+        <!-- Small '+' Button -->
+        <button class="mdl-button mdl-js-button mdl-button--fab  mdl-button--colored show-modal-subtab small-fab" data-tab-id="{{ item.tab.id }}">
+            <i  data-tab-id="{{ item.tab.id }}" class="material-icons subtab-add">add</i>
+        </button>
+    </div> 
+   
+
+    <!-- Subtabs are listed under each Tab header -->
+    {% for subtab in item.user_subtabs %}
+    {% if not edit %}
+    <div class='subtab retrieve-button' hx-get="/subtab/{{subtab.id}}" hx-replace-url="/home/{{subtab.id}}" hx-target=".markdown_editor" hx-swap="innerHTML">{{ subtab.name }}
+</div>
+    {% else %}
+    <div class='subtab subtab_button' data-tab-id={{subtab.id}}>{{ subtab.name }}
+</div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endfor %}
+
+<script>
+// Select all elements with class 'subtab_button'
+var buttons = document.querySelectorAll('.subtab_button');
+
+// Function to handle click event
+function handleClick() {
+    var dataTabId = this.getAttribute('data-tab-id');
+
+
+    var hiddenTab = document.getElementById("editor-value");
+    var hiddenTabId = document.getElementById("subtab_id");
+  hiddenTabId.value = dataTabId;
+   url = "/home/" + dataTabId;
+  title = "Home";
+    window.history.replaceState( {} , title, url );
+
+    // Send request to server
+    fetch('/subtab/' + dataTabId)
+        .then(response => response.text())
+        .then(rawText => {
+            // Process the raw text response here
+            console.log("Response from server:", rawText);
+
+            // Assuming you want to set this raw text to the hidden input
+            hiddenTab.value = rawText;
+            hiddenTab.dispatchEvent(new Event('change'));
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+        });
+}
+
+// Assuming 'buttons' is already defined as all elements with class 'subtab_button'
+buttons.forEach(function(button) {
+    button.addEventListener('click', handleClick);
+});
+</script>
+

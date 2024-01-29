@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MDL CSS -->
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <!-- MDL icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="{% static 'css/highlight.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <style>
+        .tab-menu {
+            width: 200px;
+            height: 100vh;
+            float: left;
+            padding: 10px;
+            box-sizing: border-box;
+          background-color: #E0E0E0;
+        position: fixed; /* Fixed positioning */
+          top: 0;         /* Align to the top of the viewport */
+          left: 0;        /* Align to the left of the viewport */
+          right: 0;       /* Stretch across the full width of the viewport */
+          z-index: 1000;  /* Ensures the div stays above other content */
+    overflow-y: auto; /* Enables vertical scrolling if content exceeds max-height */
+        }
+        .tab, .subtab {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #E0E0E0;
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .tab:hover, .subtab:hover {
+            background-color: #BDBDBD;
+        }
+        .subtab {
+            margin-left: 20px;
+            font-size: 0.9em;
+        }
+        .icon {
+            cursor: pointer;
+        }
+
+
+        
+ .small-fab {
+        height: 20px;
+        width: 20px;
+        min-width: 20px;
+        border-radius: 50%;
+        font-size: 14px;
+        line-height: 20px;
+        color:#E0E0E0;
+        opacity: 0; /* Make button fully transparent initially */
+        transition: opacity 0.3s ease; 
+    }
+
+    .small-fab i {
+        line-height: 20px;
+    }
+
+    .small-fab:hover {
+      color: #000;
+      opacity: 1;
+    }
+.markdown-container {
+    display: flex;
+    justify-content: center; /* Centers the child horizontally */
+    padding: 0 100px; /* Adds 100px padding on both left and right */
+}
+
+.markdown_editor {
+    /* Define a specific width if necessary, or use max-width for responsiveness */
+    width: 80%; /* Adjust this value as needed */
+    max-width: 1200px; /* Example max-width, adjust as needed */
+}
+    </style>
+</head>
+<body>
+
+    {% block content %}
+    <!-- This block will be overridden by child templates -->
+    {% endblock %}
+
+    <!-- MDL JavaScript -->
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <!-- HTMX JavaScript -->
+    <script src="https://unpkg.com/htmx.org"></script>
+
+
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+     <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            mermaid.initialize({ startOnLoad: true });
+
+            document.body.addEventListener('htmx:afterSwap', () => {
+                mermaid.init(undefined, '.mermaid');
+            });
+        });
+    </script>
+
+
+      </body>
+</html>

@@ -1,0 +1,120 @@
+{% if edit %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<textarea id="editor" name="editor"></textarea>
+
+<!-- Hidden input for storing tag ID -->
+<input type='hidden' name='editor-value' id='editor-value'  value="{{markdown_value}}" />
+
+<!-- Button for triggering submission via fetch -->
+<button id="submit-button" type="button">Submit</button>
+
+<script>
+    
+    var simplemde;
+    var contentChanged = false;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initSimpleMDE();
+        setupSubmitButton();
+        setupHiddenInputListener();
+    });
+
+    function initSimpleMDE() {
+        simplemde = new SimpleMDE({
+            element: document.getElementById("editor"),
+            autosave: {
+                enabled: true,
+                uniqueId: "MyUniqueID",
+                delay: 1000,
+            }
+        });
+        
+        simplemde.value(document.getElementById("editor-value").value);
+
+        simplemde.codemirror.on("change", function() {
+            document.getElementById("editor-value").value = simplemde.value();
+            contentChanged = true;
+           updateButtonColor();
+        });
+    }
+
+    function setupSubmitButton() {
+        document.getElementById("submit-button").addEventListener('click', function() {
+            submitData();
+        });
+    }
+
+    function setupHiddenInputListener() {
+        var hiddenElement = document.getElementById("editor-value");
+        hiddenElement.addEventListener('change', function() {
+            if (simplemde) {
+                simplemde.value(hiddenElement.value);
+            }
+        });
+    }
+
+    function submitData() {
+       // subtab_id = document.getElementById("subtab_id").value;
+
+
+        // Get the current URL
+        var currentURL = window.location.pathname;
+
+        // Use regular expression to extract the number
+        var match = currentURL.match(/\/(\d+)\//);
+      console.log(match);
+        
+
+        if (match) {
+          var number = match[1];
+          subtab_id = number;
+        } else {
+          subtab_id = null;
+        }
+        var markdownContent = simplemde.value();
+
+        fetch('/subtab/' + subtab_id + '/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Add other necessary headers here
+            },
+            body: JSON.stringify({ markdown: markdownContent })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text(); // or .text() if your server responds with text
+        })
+        .then(data => {
+            console.log("Submission successful", data);
+        contentChanged = false;
+        updateButtonColor();
+            // Handle the successful response here
+        })
+        .catch(error => {
+            console.error("Submission error:", error);
+            // Handle the error here
+        });
+
+
+    }
+
+function updateButtonColor() {
+        var submitButton = document.getElementById("submit-button");
+        submitButton.style.backgroundColor = contentChanged ? "blue" : "grey";
+    }
+
+
+
+
+</script>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+</script>
+{% endif %}
+

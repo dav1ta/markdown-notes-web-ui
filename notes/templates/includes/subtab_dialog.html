@@ -1,0 +1,49 @@
+<!-- Subtab Dialog -->
+<dialog id="subtab-dialog" class="mdl-dialog">
+    <h3 class="mdl-dialog__title">Add Subtab</h3>
+  <form id="subtab-form" hx-post="/tab/create-subtab/" hx-target=".tab-replace" hx-swap="innerHTML">
+        <div class="mdl-dialog__content">
+            <div class="mdl-textfield mdl-js-textfield">
+                <!-- Placeholder for server-side CSRF token -->
+                {% csrf_token %} 
+                <input class="mdl-textfield__input" type="text" id="subtab_name" name="subtab_name">
+                <input class="mdl-textfield__input" type="hidden" id="subtab_id" name="subtab_id">
+                <label class="mdl-textfield__label" for="subtab_name">Subtab Name...</label>
+            </div>
+        </div>
+        <div class="mdl-dialog__actions">
+            <button type="submit" class="mdl-button">Add</button>
+            <button type="button" class="mdl-button close">Close</button>
+        </div>
+    </form>
+</dialog>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    'use strict';
+    var dialog = document.querySelector('#subtab-dialog');
+    
+    // Close button event listener
+    dialog.querySelector('.close').addEventListener('click', function() {
+        dialog.close();
+    });
+
+  //close on dialog submit
+  dialog.querySelector('#subtab-form').addEventListener('submit', function() {
+    dialog.close();
+  });
+
+    // Attach the event listener to a constant parent element
+    document.body.addEventListener('click', function(event) {
+        // Check if the clicked element is a dialog button
+    if (event.target.classList.contains('show-modal-subtab')||event.target.classList.contains('subtab-add')){
+            var tabId = event.target.getAttribute('data-tab-id');
+            var inp = document.getElementById('subtab_id');
+            inp.value = tabId;
+            dialog.showModal();
+        }
+    });
+});
+</script>
+

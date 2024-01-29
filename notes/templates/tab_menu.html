@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<script>
+    function showTabDialog() {
+        var currentUrl = window.location.href;
+
+        var toggleUrl = '/toggle?'+ 'redirect=' + encodeURIComponent(currentUrl);
+        console.log(toggleUrl);
+
+        window.location.href = toggleUrl;
+    }
+</script>
+
+<div class="tab-menu">
+     <!-- Add Tab with HTMX -->
+
+    {% if edit %}
+    <button onclick='showTabDialog()' class='mdl-button mdl-js-button mdl-button--primary'> Render mode</button>
+    {% else %}
+    <button onclick='showTabDialog()' class='mdl-button mdl-js-button mdl-button--primary'>Edit mode</button>
+    {% endif %}
+
+    <i  class="material-icons mdl-button mdl-button--raised mdl-js-button show-modal-tab">add</i> 
+
+    <!-- Include Tabs -->
+    <div class='tab-replace'>
+    {% include 'includes/tabs.html' %}
+    </div>
+</div>
+
+<div class="tab-content" style="margin-left: 210px;">
+    <!-- Content for the selected tab will be displayed here -->
+</div>
+<div class='markdown-container'>
+    <div class='markdown_editor'>
+      {% if edit %}
+        {% include 'markdown_editor.html' %}
+        {% else %}
+        {{markdown_value}}
+        {% endif %}
+    </div>
+</div>
+
+
+{% include 'includes/tab_dialog.html' %}
+{% include 'includes/subtab_dialog.html' %}
+
+{% endblock %}
+
+<script>
+  function toggle() {
+    
+  }
+  </script>
